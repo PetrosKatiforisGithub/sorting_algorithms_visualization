@@ -33,6 +33,7 @@ utils_label_t variable_labels[MAX_ALGORITHM_VARIABLES];
 
 // Will be modified to read and interpret the algorithm's history
 int current_history_index = 0;
+int swapped_a = -1, swapped_b = -1;
 algo_e current_algorithm;
 
 SDL_Color white = {255, 255, 255, 255};
@@ -76,14 +77,17 @@ void interpret_next_algorithm_history_entry(void)
     switch (entry->action)
     {
     case ACTION_SWAP_INDECES:
+	swapped_a = entry->data.swap_indeces_data.a;
+	swapped_b = entry->data.swap_indeces_data.b;
+	
 	// Swap the rectangles described by the entry using an intermediate copy
-	int temp = list_rectangles[entry->data.swap_indeces_data.a].h;
+	int temp = list_rectangles[swapped_a].h;
 
-	list_rectangles[entry->data.swap_indeces_data.a].h = list_rectangles[entry->data.swap_indeces_data.b].h;
-	align_rect_to_x_axis(entry->data.swap_indeces_data.a);
+	list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
+	align_rect_to_x_axis(swapped_a);
 
-	list_rectangles[entry->data.swap_indeces_data.b].h = temp;
-	align_rect_to_x_axis(entry->data.swap_indeces_data.b);
+	list_rectangles[swapped_b].h = temp;
+	align_rect_to_x_axis(swapped_b);
 
 	// Playing a swap sound effect
 	Mix_PlayChannel(-1, swap_sfx, 0);
@@ -91,6 +95,8 @@ void interpret_next_algorithm_history_entry(void)
 	break;
 
     case ACTION_SET_VARIABLE:
+	swapped_a = swapped_b = -1;
+	
 	// If a variable has just been modified or initialized, then create some visual feedback
 	// I just need to position in according to the index that it is refering to
 	int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
@@ -117,19 +123,24 @@ void interpret_previous_algorithm_history_entry(void)
     {
     case ACTION_SWAP_INDECES:
 	// The exact same implementation, the swap operation is effortlessly reveresable
-	int temp = list_rectangles[entry->data.swap_indeces_data.a].h;
-
-	list_rectangles[entry->data.swap_indeces_data.a].h = list_rectangles[entry->data.swap_indeces_data.b].h;
-	align_rect_to_x_axis(entry->data.swap_indeces_data.a);
-
-	list_rectangles[entry->data.swap_indeces_data.b].h = temp;
-	align_rect_to_x_axis(entry->data.swap_indeces_data.b);
+	swapped_a = entry->data.swap_indeces_data.a;
+	swapped_b = entry->data.swap_indeces_data.b;
 	
+	int temp = list_rectangles[swapped_a].h;
+
+	list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
+	align_rect_to_x_axis(swapped_a);
+
+	list_rectangles[swapped_b].h = temp;
+	align_rect_to_x_axis(swapped_b);
+
 	Mix_PlayChannel(-1, swap_sfx, 0);
 	
 	break;
 
     case ACTION_SET_VARIABLE:
+	swapped_a = swapped_b = -1;
+
 	// Do the reverse, just assign the old value back to the variable
 	int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
 	int old_value = algo_history[current_history_index].data.set_variable_data.old_value;
@@ -160,6 +171,7 @@ void execute_algorithm(algo_e algo_type)
     algo_history_length = 0;
     algo_total_variables = 0;
     current_history_index = 0;
+    swapped_a = swapped_b = -1;
     
     utils_label_set_content(&title_label, renderer, algorithm_titles[algo_type]);
     title_label.background.x = TITLE_X;
@@ -206,7 +218,7 @@ void initialize_globals(void)
     utils_label_create(&description_label, main_font, 200, &white, true);
     
     utils_label_create(&instructions_label, main_font, 500, &gray, false);
-    utils_label_set_content(&instructions_label, renderer, "(Βήματα με Βελάκια, SPACE για αλλαγή αλγόριθμου)");
+    utils_label_set_content(&instructions_label, renderer, "(Βήματα με βελάκια, SPACE για αλλαγή αλγορίθμου)");
     instructions_label.background.y = HEIGHT - 40;
     instructions_label.background.x = (WIDTH - instructions_label.background.w) / 2;
     
@@ -269,7 +281,16 @@ int main()
 	// Rendering the list contents using rectangles
 	for (int i = 0; i < LIST_LENGTH; i++)
 	{
-	    SDL_SetRenderDrawColor(renderer, 100, 100, 150, 255);
+	    // Highlight the items that were just swapped
+	    if (i == swapped_a || i == swapped_b)
+	    {
+		SDL_SetRenderDrawColor(renderer, 200, 200, 255, 255);
+	    }
+	    else
+	    {
+		SDL_SetRenderDrawColor(renderer, 100, 100, 200, 255);
+	    }
+	    
 	    SDL_RenderFillRect(renderer, &list_rectangles[i]);
 	}
 
