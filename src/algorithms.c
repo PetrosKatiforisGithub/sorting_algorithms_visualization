@@ -66,11 +66,10 @@ void load_algorithm_source_codes(void)
     }
 }
 
-// Act like any other variable creation statement,
-// but also create a history entry as a side effect!
+// Create variable and initialize to the invalid value -1
 algorithm_variable_t* create_variable(char *token)
 {
-    // Find an empty spot at the variable table
+    // Find an empty spot in the variables table
     int variable_index;
     for (variable_index = 0; variable_index < MAX_ALGORITHM_VARIABLES; variable_index++)
     {
@@ -106,7 +105,7 @@ void update_variable(algorithm_variable_t *variable, int new_value)
 
 void swap_indeces(int *data, int a, int b)
 {
-    // Executing the swap operation on the usual list of integers
+    // Executing the swap operation on the ordinary list of integers
     int temp = data[a];
     data[a] = data[b];
     data[b] = temp;
@@ -119,7 +118,7 @@ void swap_indeces(int *data, int a, int b)
 }
 
 /*
- * Implementing the lecture's sorting algorithms with the history recording in mind
+ * Implementing the lecture's sorting algorithms with history recording in mind
  * They will all end up slower and considerably more verbose
  */
 void selection_sort(int *data, int lower, int upper)

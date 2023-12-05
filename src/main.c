@@ -10,6 +10,7 @@
 // Window dimensions
 #define WIDTH 800
 #define HEIGHT 640
+
 #define BAR_Y 450
 #define BAR_WIDTH 20
 #define BAR_SPACING 2
@@ -97,8 +98,8 @@ void interpret_next_algorithm_history_entry(void)
     case ACTION_SET_VARIABLE:
 	swapped_a = swapped_b = -1;
 	
-	// If a variable has just been modified or initialized, then create some visual feedback
-	// I just need to position in according to the index that it is refering to
+	// If a variable has just been modified, then create some visual feedback
+	// I just need to position the variable's label according to the index that it is refering to
 	int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
 	int new_value = algo_history[current_history_index].data.set_variable_data.new_value;
 
@@ -122,7 +123,7 @@ void interpret_previous_algorithm_history_entry(void)
     switch (entry->action)
     {
     case ACTION_SWAP_INDECES:
-	// The exact same implementation, the swap operation is effortlessly reveresable
+	// The exact same implementation, the swap operation is automatically reveresable
 	swapped_a = entry->data.swap_indeces_data.a;
 	swapped_b = entry->data.swap_indeces_data.b;
 	
@@ -172,7 +173,8 @@ void execute_algorithm(algo_e algo_type)
     algo_total_variables = 0;
     current_history_index = 0;
     swapped_a = swapped_b = -1;
-    
+
+    // Updating label content
     utils_label_set_content(&title_label, renderer, algorithm_titles[algo_type]);
     title_label.background.x = TITLE_X;
     title_label.background.y = TITLE_Y;
@@ -188,7 +190,7 @@ void execute_algorithm(algo_e algo_type)
     randomize_list();
     algorithm_implementations[algo_type](list_to_be_sorted, 0, LIST_LENGTH - 1);
 
-    // Initialize new variable sprites
+    // Initialize the new variable labels
     for (int i = 0; i < algo_total_variables; i++)
     {
 	utils_label_create(&variable_labels[i], main_font, 40, &white, true);
@@ -253,13 +255,13 @@ int main()
 	    // Check if the user has just triggered a window destruction event
 	    if (event.type == SDL_QUIT) goto destroy_game;
 
-	    // If the user wants to step forward through the process of the algorithm,
-	    // just interpret the next history instruction
 	    if (event.type == SDL_KEYDOWN)
 	    {
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_RIGHT:
+		    // If the user wants to step forward through the process of the algorithm,
+		    // just interpret the next history instruction
 		    interpret_next_algorithm_history_entry();
 		    break;
 
@@ -281,14 +283,14 @@ int main()
 	// Rendering the list contents using rectangles
 	for (int i = 0; i < LIST_LENGTH; i++)
 	{
-	    // Highlight the items that were just swapped
+	    // Highlight the items that were just swapped with a special color
 	    if (i == swapped_a || i == swapped_b)
 	    {
 		SDL_SetRenderDrawColor(renderer, 200, 200, 255, 255);
 	    }
 	    else
 	    {
-		SDL_SetRenderDrawColor(renderer, 100, 100, 200, 255);
+		SDL_SetRenderDrawColor(renderer, 90, 90, 255, 255);
 	    }
 	    
 	    SDL_RenderFillRect(renderer, &list_rectangles[i]);
@@ -310,7 +312,8 @@ int main()
 	}
 
 	SDL_RenderPresent(renderer);
-	SDL_Delay(1000 / 60);
+	// Running the program at 20 frames per second to improve performance
+	SDL_Delay(1000 / 20);
     }
 
 destroy_game:

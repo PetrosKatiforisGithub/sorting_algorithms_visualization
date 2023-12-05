@@ -21,7 +21,7 @@ typedef struct
     algorithm_action_e action;
 
     // All possible action metadata will be stored in this union to save space
-    // Only one action will be accessible at once
+    // Only one action will be accessible during each read operation
     union
     {
 	struct
@@ -39,7 +39,7 @@ typedef struct
     
 } algorithm_history_entry_t;
 
-// This could be a dynamic array as well,
+// This could have been a dynamic array,
 // but the program won't exceed that limit anyway
 extern algorithm_history_entry_t algo_history[MAX_ALGO_HISTORY];
 extern size_t algo_history_length;
@@ -51,13 +51,14 @@ typedef struct
     char *token;
     int value;
 
-    // Storing the position of the variable in upcoming global lookup table
+    // The position of the variable in the global lookup table
+    // Access is much faster compared to searching for string matches
     int table_index;
 } algorithm_variable_t;
 extern algorithm_variable_t algo_variables[MAX_ALGORITHM_VARIABLES];
 extern int algo_total_variables;
 
-// Some helpers functions to generate any algorithm's useful history
+// Some helper functions to generate any algorithm's useful history
 algorithm_variable_t* create_variable(char *token);
 void update_variable(algorithm_variable_t *variable, int new_value);
 void swap_indeces(int *data, int a, int b);
@@ -74,7 +75,7 @@ void bubble_sort(int *data, int lower, int upper);
 
 /*
  * Storing some algorithm-specific data!
- * It will be store in the form of highly-accessible enum lists
+ * Will be stored in the form of highly-accessible enum lists
  */
 typedef enum
 {

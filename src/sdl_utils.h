@@ -14,7 +14,7 @@ typedef struct
     SDL_Color *color;
 } utils_label_t;
 
-// Wrap length restrict's the text's width to a certain number and wraps long sentences
+// Wrap length restricts the text's width to a certain number and wraps long sentences
 // into their own, separate lines
 void utils_label_create(utils_label_t *label, TTF_Font *font, unsigned int wrap_length, SDL_Color *background_color, bool has_background);
 
