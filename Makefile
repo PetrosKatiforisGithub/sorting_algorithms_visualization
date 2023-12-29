@@ -6,7 +6,7 @@ endef
 SOURCES = $(call collect_sources, src)
 OBJECTS = $(patsubst %.c, objects/%.o, $(SOURCES))
 
-LD_FLAGS = `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf` -lm
+LD_FLAGS = `pkg-config --libs sdl2 SDL2_mixer SDL2_ttf` -lm
 
 .PHONY: build
 all: build
