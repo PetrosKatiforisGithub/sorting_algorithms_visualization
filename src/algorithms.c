@@ -41,28 +41,28 @@ void load_algorithm_source_codes(void)
     // So I'm just allocating them on the heap. They will be freed automatically by the operating system
     for (int i = 0; i < ALGO_TOTAL; i++)
     {
-	char file_path[256];
-	sprintf(file_path, "res/algorithms_source_code/%d.c", i);
-	FILE *algo_file = fopen(file_path, "r");
+        char file_path[256];
+        sprintf(file_path, "res/algorithms_source_code/%d.c", i);
+        FILE *algo_file = fopen(file_path, "r");
 
-	if (!algo_file)
-	{
-	    fprintf(stderr, "failed to read res/algorithms_source/code/, does the folder exist?\n");
-	    exit(EXIT_FAILURE);
-	}
-	
-	// Collecting the total size of the file in bytes and allocating enough space on the heap
-	fseek(algo_file, 0, SEEK_END);
-	size_t length = ftell(algo_file);
-	fseek(algo_file, 0, SEEK_SET);
+        if (!algo_file)
+        {
+            fprintf(stderr, "failed to read res/algorithms_source/code/, does the folder exist?\n");
+            exit(EXIT_FAILURE);
+        }
+    
+        // Collecting the total size of the file in bytes and allocating enough space on the heap
+        fseek(algo_file, 0, SEEK_END);
+        size_t length = ftell(algo_file);
+        fseek(algo_file, 0, SEEK_SET);
 
-	char *buffer = malloc((length + 1) * sizeof(char));
-	fread(buffer, sizeof(char), length, algo_file);
-	// Terminating the string with a null byte
-	buffer[length] = 0;
+        char *buffer = malloc((length + 1) * sizeof(char));
+        fread(buffer, sizeof(char), length, algo_file);
+        // Terminating the string with a null byte
+        buffer[length] = 0;
 
-	algorithm_source_codes[i] = buffer;
-	fclose(algo_file);
+        algorithm_source_codes[i] = buffer;
+        fclose(algo_file);
     }
 }
 
@@ -73,15 +73,15 @@ algorithm_variable_t* create_variable(char *token)
     int variable_index;
     for (variable_index = 0; variable_index < MAX_ALGORITHM_VARIABLES; variable_index++)
     {
-	if (algo_variables[variable_index].token == NULL)
-	{
-	    algo_variables[variable_index].token = strdup(token);
-	    algo_variables[variable_index].value = -1;
-	    algo_variables[variable_index].table_index = variable_index;
+        if (algo_variables[variable_index].token == NULL)
+        {
+            algo_variables[variable_index].token = strdup(token);
+            algo_variables[variable_index].value = -1;
+            algo_variables[variable_index].table_index = variable_index;
 
-	    algo_total_variables++;
-	    break;
-	}
+            algo_total_variables++;
+            break;
+        }
     }
     
     return &algo_variables[variable_index];
@@ -91,13 +91,13 @@ void update_variable(algorithm_variable_t *variable, int new_value)
 {
     if (new_value < LIST_LENGTH)
     {
-	// History entry side-effects
-	algo_history[algo_history_length].action = ACTION_SET_VARIABLE;
-	algo_history[algo_history_length].data.set_variable_data.variable_table_index = variable->table_index;
-	algo_history[algo_history_length].data.set_variable_data.old_value = variable->value;
-	algo_history[algo_history_length].data.set_variable_data.new_value = new_value;
+        // History entry side-effects
+        algo_history[algo_history_length].action = ACTION_SET_VARIABLE;
+        algo_history[algo_history_length].data.set_variable_data.variable_table_index = variable->table_index;
+        algo_history[algo_history_length].data.set_variable_data.old_value = variable->value;
+        algo_history[algo_history_length].data.set_variable_data.new_value = new_value;
 
-	algo_history_length++;
+        algo_history_length++;
     }
     
     variable->value = new_value;
@@ -129,15 +129,15 @@ void selection_sort(int *data, int lower, int upper)
 
     for (update_variable(i, 1); i->value <= upper; update_variable(i, i->value + 1))
     {
-	update_variable(min, i->value - 1);
-	
-	for (update_variable(j, i->value); j->value <= upper; update_variable(j, j->value + 1))
-	{
-	    if (data[j->value] < data[min->value])
-		update_variable(min, j->value);
-	}
+        update_variable(min, i->value - 1);
     
-	swap_indeces(data, i->value - 1, min->value);
+        for (update_variable(j, i->value); j->value <= upper; update_variable(j, j->value + 1))
+        {
+            if (data[j->value] < data[min->value])
+                update_variable(min, j->value);
+        }
+    
+        swap_indeces(data, i->value - 1, min->value);
     }
 }
 
@@ -148,13 +148,13 @@ void insertion_sort(int *data, int lower, int upper)
 
     for (update_variable(i, 1); i->value <= upper; update_variable(i, i->value + 1))
     {
-	update_variable(j, i->value - 1);
-	
-	while (j->value >= 0 && data[j->value] > data[j->value + 1])
-	{
-	    swap_indeces(data, j->value, j->value + 1);
-	    update_variable(j, j->value - 1);
-	}
+        update_variable(j, i->value - 1);
+    
+        while (j->value >= 0 && data[j->value] > data[j->value + 1])
+        {
+            swap_indeces(data, j->value, j->value + 1);
+            update_variable(j, j->value - 1);
+        }
     }
 }
 
@@ -165,10 +165,10 @@ void bubble_sort(int *data, int lower, int upper)
 
     for (update_variable(i, 1); i->value <= upper; update_variable(i, i->value + 1))
     {
-	for (update_variable(j, upper); j->value >= i->value; update_variable(j, j->value - 1))
-	{
-	    if (data[j->value - 1] > data[j->value])
-		swap_indeces(data, j->value - 1, j->value);
-	}
+        for (update_variable(j, upper); j->value >= i->value; update_variable(j, j->value - 1))
+        {
+            if (data[j->value - 1] > data[j->value])
+                swap_indeces(data, j->value - 1, j->value);
+        }
     }
 }

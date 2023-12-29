@@ -24,17 +24,17 @@ typedef struct
     // Only one action will be accessible during each read operation
     union
     {
-	struct
-	{
-	    int variable_table_index;
-	    int old_value, new_value;
-	} set_variable_data;
+        struct
+        {
+            int variable_table_index;
+            int old_value, new_value;
+        } set_variable_data;
 
-	struct
-	{
-	    // Indeces of the rectangles to be swapped
-	    int a, b;
-	} swap_indeces_data;
+        struct
+        {
+            // Indeces of the rectangles to be swapped
+            int a, b;
+        } swap_indeces_data;
     } data;
     
 } algorithm_history_entry_t;

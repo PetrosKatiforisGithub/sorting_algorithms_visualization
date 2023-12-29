@@ -57,14 +57,14 @@ void randomize_list(void)
     // Populate the global list with some random values
     for (int i = 0; i < LIST_LENGTH; i++)
     {
-	list_to_be_sorted[i] = 20 + rand() % 100;
+        list_to_be_sorted[i] = 20 + rand() % 100;
 
-	if (list_to_be_sorted[i] > max_list_height)
-	    max_list_height = list_to_be_sorted[i];
-	
-	// Modify the corresponding rectangles
-	list_rectangles[i].h = list_to_be_sorted[i];
-	align_rect_to_x_axis(i);
+        if (list_to_be_sorted[i] > max_list_height)
+            max_list_height = list_to_be_sorted[i];
+    
+        // Modify the corresponding rectangles
+        list_rectangles[i].h = list_to_be_sorted[i];
+        align_rect_to_x_axis(i);
     }
 }
 
@@ -78,35 +78,35 @@ void interpret_next_algorithm_history_entry(void)
     switch (entry->action)
     {
     case ACTION_SWAP_INDECES:
-	swapped_a = entry->data.swap_indeces_data.a;
-	swapped_b = entry->data.swap_indeces_data.b;
-	
-	// Swap the rectangles described by the entry using an intermediate copy
-	int temp = list_rectangles[swapped_a].h;
+        swapped_a = entry->data.swap_indeces_data.a;
+        swapped_b = entry->data.swap_indeces_data.b;
+    
+        // Swap the rectangles described by the entry using an intermediate copy
+        int temp = list_rectangles[swapped_a].h;
 
-	list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
-	align_rect_to_x_axis(swapped_a);
+        list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
+        align_rect_to_x_axis(swapped_a);
 
-	list_rectangles[swapped_b].h = temp;
-	align_rect_to_x_axis(swapped_b);
+        list_rectangles[swapped_b].h = temp;
+        align_rect_to_x_axis(swapped_b);
 
-	// Playing a swap sound effect
-	Mix_PlayChannel(-1, swap_sfx, 0);
-	
-	break;
+        // Playing a swap sound effect
+        Mix_PlayChannel(-1, swap_sfx, 0);
+    
+        break;
 
     case ACTION_SET_VARIABLE:
-	swapped_a = swapped_b = -1;
-	
-	// If a variable has just been modified, then create some visual feedback
-	// I just need to position the variable's label according to the index that it is refering to
-	int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
-	int new_value = algo_history[current_history_index].data.set_variable_data.new_value;
+        swapped_a = swapped_b = -1;
+    
+        // If a variable has just been modified, then create some visual feedback
+        // I just need to position the variable's label according to the index that it is refering to
+        int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
+        int new_value = algo_history[current_history_index].data.set_variable_data.new_value;
 
-	variable_labels[table_index].background.x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + \
-	    new_value * (BAR_WIDTH + BAR_SPACING);
-	
-	break;
+        variable_labels[table_index].background.x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + \
+            new_value * (BAR_WIDTH + BAR_SPACING);
+    
+        break;
     }
     
     current_history_index++;
@@ -123,33 +123,33 @@ void interpret_previous_algorithm_history_entry(void)
     switch (entry->action)
     {
     case ACTION_SWAP_INDECES:
-	// The exact same implementation, the swap operation is automatically reveresable
-	swapped_a = entry->data.swap_indeces_data.a;
-	swapped_b = entry->data.swap_indeces_data.b;
-	
-	int temp = list_rectangles[swapped_a].h;
+        // The exact same implementation, the swap operation is automatically reveresable
+        swapped_a = entry->data.swap_indeces_data.a;
+        swapped_b = entry->data.swap_indeces_data.b;
+    
+        int temp = list_rectangles[swapped_a].h;
 
-	list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
-	align_rect_to_x_axis(swapped_a);
+        list_rectangles[swapped_a].h = list_rectangles[swapped_b].h;
+        align_rect_to_x_axis(swapped_a);
 
-	list_rectangles[swapped_b].h = temp;
-	align_rect_to_x_axis(swapped_b);
+        list_rectangles[swapped_b].h = temp;
+        align_rect_to_x_axis(swapped_b);
 
-	Mix_PlayChannel(-1, swap_sfx, 0);
-	
-	break;
+        Mix_PlayChannel(-1, swap_sfx, 0);
+    
+        break;
 
     case ACTION_SET_VARIABLE:
-	swapped_a = swapped_b = -1;
+        swapped_a = swapped_b = -1;
 
-	// Do the reverse, just assign the old value back to the variable
-	int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
-	int old_value = algo_history[current_history_index].data.set_variable_data.old_value;
+        // Do the reverse, just assign the old value back to the variable
+        int table_index = algo_history[current_history_index].data.set_variable_data.variable_table_index;
+        int old_value = algo_history[current_history_index].data.set_variable_data.old_value;
 
-	variable_labels[table_index].background.x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + \
-	    old_value * (BAR_WIDTH + BAR_SPACING);
-	
-	break;
+        variable_labels[table_index].background.x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + \
+            old_value * (BAR_WIDTH + BAR_SPACING);
+    
+        break;
     }
 }
 
@@ -162,8 +162,8 @@ void execute_algorithm(algo_e algo_type)
     // Get rid of the old variables to avoid memory leaks
     for (int i = 0; i < algo_total_variables; i++)
     {
-	utils_label_destroy(&variable_labels[i]);
-	free(algo_variables[i].token);
+        utils_label_destroy(&variable_labels[i]);
+        free(algo_variables[i].token);
     }
 
     // Cleaning up the previous data
@@ -193,10 +193,10 @@ void execute_algorithm(algo_e algo_type)
     // Initialize the new variable labels
     for (int i = 0; i < algo_total_variables; i++)
     {
-	utils_label_create(&variable_labels[i], main_font, 40, &white, true);
-	utils_label_set_content(&variable_labels[i], renderer, algo_variables[i].token);
-	variable_labels[i].background.y = BAR_Y + 5 + 20 * i;
-	variable_labels[i].background.x = 0;
+        utils_label_create(&variable_labels[i], main_font, 40, &white, true);
+        utils_label_set_content(&variable_labels[i], renderer, algo_variables[i].token);
+        variable_labels[i].background.y = BAR_Y + 5 + 20 * i;
+        variable_labels[i].background.x = 0;
     }
 }
 
@@ -204,9 +204,9 @@ void initialize_globals(void)
 {
     // Creating an SDL renderer and a window
     window = SDL_CreateWindow("Visualizing Sorting Algorithms", SDL_WINDOWPOS_CENTERED,
-			      SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+                              SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
-	exit_with_error("failed to create the main SDL window");
+        exit_with_error("failed to create the main SDL window");
     
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     main_font = TTF_OpenFont("res/liberation_mono.ttf", 13);
@@ -227,8 +227,8 @@ void initialize_globals(void)
     // Positioning the list rectangles correctly
     for (int i = 0; i < LIST_LENGTH; i++)
     {
-	list_rectangles[i].w = BAR_WIDTH;
-	list_rectangles[i].x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + i * (BAR_WIDTH + BAR_SPACING);
+        list_rectangles[i].w = BAR_WIDTH;
+        list_rectangles[i].x = (WIDTH - LIST_LENGTH * (BAR_WIDTH + BAR_SPACING)) / 2 + i * (BAR_WIDTH + BAR_SPACING);
     }
 
     execute_algorithm(ALGO_SELECTION_SORT);
@@ -250,70 +250,70 @@ int main()
     
     for (;;)
     {
-	while (SDL_PollEvent(&event))
-	{
-	    // Check if the user has just triggered a window destruction event
-	    if (event.type == SDL_QUIT) goto destroy_game;
+        while (SDL_PollEvent(&event))
+        {
+            // Check if the user has just triggered a window destruction event
+            if (event.type == SDL_QUIT) goto destroy_game;
 
-	    if (event.type == SDL_KEYDOWN)
-	    {
-		switch (event.key.keysym.sym)
-		{
-		case SDLK_RIGHT:
-		    // If the user wants to step forward through the process of the algorithm,
-		    // just interpret the next history instruction
-		    interpret_next_algorithm_history_entry();
-		    break;
+            if (event.type == SDL_KEYDOWN)
+            {
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_RIGHT:
+                    // If the user wants to step forward through the process of the algorithm,
+                    // just interpret the next history instruction
+                    interpret_next_algorithm_history_entry();
+                    break;
 
-		case SDLK_LEFT:
-		    interpret_previous_algorithm_history_entry();
-		    break;
+                case SDLK_LEFT:
+                    interpret_previous_algorithm_history_entry();
+                    break;
 
-		case SDLK_SPACE:
-		    // When space is pressed, the next algorithm shall be enabled
-		    execute_algorithm(current_algorithm < ALGO_TOTAL - 1 ? current_algorithm + 1 : 0);
-		    break;
-		}
-	    }
-	}
+                case SDLK_SPACE:
+                    // When space is pressed, the next algorithm shall be enabled
+                    execute_algorithm(current_algorithm < ALGO_TOTAL - 1 ? current_algorithm + 1 : 0);
+                    break;
+                }
+            }
+        }
 
-	SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
-	SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
+        SDL_RenderClear(renderer);
 
-	// Rendering the list contents using rectangles
-	for (int i = 0; i < LIST_LENGTH; i++)
-	{
-	    // Highlight the items that were just swapped with a special color
-	    if (i == swapped_a || i == swapped_b)
-	    {
-		SDL_SetRenderDrawColor(renderer, 200, 200, 255, 255);
-	    }
-	    else
-	    {
-		SDL_SetRenderDrawColor(renderer, 90, 90, 255, 255);
-	    }
-	    
-	    SDL_RenderFillRect(renderer, &list_rectangles[i]);
-	}
+        // Rendering the list contents using rectangles
+        for (int i = 0; i < LIST_LENGTH; i++)
+        {
+            // Highlight the items that were just swapped with a special color
+            if (i == swapped_a || i == swapped_b)
+            {
+                SDL_SetRenderDrawColor(renderer, 200, 200, 255, 255);
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, 90, 90, 255, 255);
+            }
+        
+            SDL_RenderFillRect(renderer, &list_rectangles[i]);
+        }
 
-	// Rendering explanatory labels
-	utils_label_render(&instructions_label, renderer);
-	utils_label_render(&title_label, renderer);
-	utils_label_render(&description_label, renderer);
-	utils_label_render(&source_code_label, renderer);
+        // Rendering explanatory labels
+        utils_label_render(&instructions_label, renderer);
+        utils_label_render(&title_label, renderer);
+        utils_label_render(&description_label, renderer);
+        utils_label_render(&source_code_label, renderer);
 
-	// Rendering the variables' labels
-	for (int i = 0; i < algo_total_variables; i++)
-	{
-	    if (variable_labels[i].background.x >= list_rectangles[0].x)
-	    {
-		utils_label_render(&variable_labels[i], renderer);
-	    }
-	}
+        // Rendering the variables' labels
+        for (int i = 0; i < algo_total_variables; i++)
+        {
+            if (variable_labels[i].background.x >= list_rectangles[0].x)
+            {
+                utils_label_render(&variable_labels[i], renderer);
+            }
+        }
 
-	SDL_RenderPresent(renderer);
-	// Running the program at 20 frames per second to improve performance
-	SDL_Delay(1000 / 20);
+        SDL_RenderPresent(renderer);
+        // Running the program at 20 frames per second to improve performance
+        SDL_Delay(1000 / 20);
     }
 
 destroy_game:

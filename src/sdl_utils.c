@@ -13,7 +13,7 @@ void utils_label_set_content(utils_label_t *label, SDL_Renderer *renderer, const
 {
     // Avoid the memory leak if the texture is already populated
     if (label->texture)
-	SDL_DestroyTexture(label->texture);
+        SDL_DestroyTexture(label->texture);
     
     SDL_Surface *surface = TTF_RenderUTF8_Solid_Wrapped(label->font, content, *label->color, label->wrap_length);
     label->texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -27,8 +27,8 @@ void utils_label_render(utils_label_t *label, SDL_Renderer *renderer)
 {
     if (label->has_background)
     {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderFillRect(renderer, &label->background);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderFillRect(renderer, &label->background);
     }
     
     SDL_RenderCopy(renderer, label->texture, NULL, &label->background);
